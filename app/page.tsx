@@ -1,23 +1,27 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
-    <main className="bg-gray-100  sm:bg-red-100 md:bg-green-100 lg:bg-cyan-100 xl:bg-orange-100 2xl:bg-yellow-100 h-screen flex items-center justify-center p-5">
-      <div className="bg-white shadow-lg p-5 rounded-3xl w-full max-w-screen-sm flex flex-col gap-2 md:flex-row *:outline-none has-[input]:text-red-500">
-        <input
-          className="w-full rounded-full h-12 bg-gray-200 px-5  ring ring-transparent focus:ring-orange-500 transition-shadow peer"
-          type="email"
-          required
-          placeholder="Search here..."
-        />
-        <span className="hidden text-red-500 peer-invalid:block">
-          Email is Required
-        </span>
-        <button
-          className="bg-orange-500  text-white
-        py-3 rounded-full active:scale-90 transition-transform font-medium md:px-5"
-        >
-          Search
-        </button>
+    <div className="flex flex-col items-center justify-between min-h-screen p-6">
+      <div className="my-auto flex flex-col items-center gap-2 *:font-medium">
+        <span className="text-9xl">🥕</span>
+        <h1 className="text-4xl">당근</h1>
+        <h2 className="text-2xl">당근 마켓에 어서오세요!</h2>
       </div>
-    </main>
+      <div className="flex flex-col items-center gap-3 w-full">
+        <Link
+          href="/create-account"
+          className="w-full text-white bg-orange-500 text-lg font-medium py-2.5 rounded-md text-center hover:bg-orange-400 transition-colors"
+        >
+          시작하기
+        </Link>
+        <div className="flex gap-2">
+          <span>이미 계정이 있나요?</span>
+          <Link href="/login" className="hover:underline underline-offset-4">
+            로그인
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
