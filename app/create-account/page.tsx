@@ -3,9 +3,7 @@ import Link from "next/link";
 /* Component */
 import FormInput from "@/components/form-input";
 import FormBtn from "@/components/form-btn";
-
-/* Icon */
-import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/solid";
+import SocialLogin from "@/components/social-login";
 
 export default function CreateAccount() {
   return (
@@ -31,18 +29,7 @@ export default function CreateAccount() {
         />
         <FormBtn loading={false} text="Create account" />
       </form>
-      <div className="w-full h-px bg-neutral-500" />
-      <div>
-        <Link
-          href="/sms"
-          className="primary-btn h-10 flex items-center justify-center gap-1"
-        >
-          <span>
-            <ChatBubbleOvalLeftEllipsisIcon className="size-6" />
-          </span>
-          <span>Sign up with SMS</span>
-        </Link>
-      </div>
+      <SocialLogin />
     </div>
   );
 }
