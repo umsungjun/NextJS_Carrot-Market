@@ -1,15 +1,20 @@
+"use client"; /* button이 interactive하기때문에 use client로 사용해야 함 */
+
+import { useFormStatus } from "react-dom";
+
 interface FormBtn {
-  loading: boolean;
   text: string;
 }
 
-export default function FormBtn({ loading, text }: FormBtn) {
+export default function FormBtn({ text }: FormBtn) {
+  /* pending 속성은 form에 직접 개입할 수 없음, 자식요소에만 사용 가능 */
+  const { pending } = useFormStatus();
   return (
     <button
-      disabled={loading}
+      disabled={pending}
       className="primary-btn h-10 disabled:bg-neutral-400 disabled:text-neutral-300 disabled:cursor-not-allowed"
     >
-      {loading ? "로딩 중..." : text}
+      {pending ? "로딩 중..." : text}
     </button>
   );
 }
