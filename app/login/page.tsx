@@ -30,7 +30,7 @@ export default function Login() {
           required
           errors={[]}
         />
-        <FormBtn loading={false} text="Create account" />
+        <FormBtn text="Create account" />
       </form>
       <SocialLogin />
     </div>
