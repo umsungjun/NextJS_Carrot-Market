@@ -42,7 +42,7 @@ export default function CreateAccount() {
           placeholder="Password"
           required
           errors={state?.fieldErrors.password}
-          minLength={10}
+          minLength={8}
           maxLength={20}
         />
         <Input
@@ -51,7 +51,7 @@ export default function CreateAccount() {
           placeholder="Confirm Password"
           required
           errors={state?.fieldErrors.confirmPassword}
-          minLength={10}
+          minLength={8}
           maxLength={20}
         />
         <Button text="Create account" />

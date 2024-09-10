@@ -4,7 +4,7 @@ import { z } from "zod";
 const nameRegex = ["썅", "씨발", "시발", "개새끼", "병신"];
 
 const passwordRegex = new RegExp(
-  /^(?=.*?[AZ])(?=.*?[az])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).+$/
+  /^(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).+$/
 );
 
 const checkUserName = (userName: string) => !nameRegex.includes(userName);
@@ -30,14 +30,14 @@ const formSchema = z
     email: z.string().email("이메일 형식으로 입력해주세요"),
     password: z
       .string()
-      .min(10, "비밀번호는 최소 10자 이상이어야 합니다.")
+      .min(8, "비밀번호는 최소 8자 이상이어야 합니다.")
       .regex(
         passwordRegex,
-        "비밀번호는 소문자, 대문자, 숫자, 특수문자를 포함해야 합니다."
+        "비밀번호는 문자, 숫자, 특수문자를 포함해야 합니다."
       ),
     confirmPassword: z
       .string()
-      .min(10, "비밀번호는 최소 10자 이상이어야 합니다."),
+      .min(8, "비밀번호는 최소 8자 이상이어야 합니다."),
   })
   /* 전체 refine이기 때문에 어떤 filed에서 일어난 에러인지 명확하게 표시 해야됨 */
   .refine(checkPassword, {
@@ -56,7 +56,9 @@ export const createAccount = async (prevState: any, formData: FormData) => {
 
   if (!result.success) {
     /* flatten() key:["error"] return 해줌 */
-    console.log(result.error.flatten());
+    // console.log(result.error.flatten());
     return result.error.flatten();
+  } else {
+    console.log(result.data);
   }
 };
