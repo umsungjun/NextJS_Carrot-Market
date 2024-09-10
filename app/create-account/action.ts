@@ -1,13 +1,13 @@
 "use server";
 import { z } from "zod";
+import {
+  NAME_REGEX,
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_REGEX,
+} from "@/lib/constants";
 
-const nameRegex = ["썅", "씨발", "시발", "개새끼", "병신"];
-
-const passwordRegex = new RegExp(
-  /^(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).+$/
-);
-
-const checkUserName = (userName: string) => !nameRegex.includes(userName);
+const checkUserName = (userName: string) => !NAME_REGEX.includes(userName);
 const checkPassword = ({
   password,
   confirmPassword,
@@ -30,14 +30,16 @@ const formSchema = z
     email: z.string().email("이메일 형식으로 입력해주세요"),
     password: z
       .string()
-      .min(8, "비밀번호는 최소 8자 이상이어야 합니다.")
+      .min(PASSWORD_MIN_LENGTH, "비밀번호는 최소 8자 이상이어야 합니다.")
+      .max(PASSWORD_MAX_LENGTH, "비밀번호는 최대 20자 입니다.")
       .regex(
-        passwordRegex,
+        PASSWORD_REGEX,
         "비밀번호는 문자, 숫자, 특수문자를 포함해야 합니다."
       ),
     confirmPassword: z
       .string()
-      .min(8, "비밀번호는 최소 8자 이상이어야 합니다."),
+      .min(PASSWORD_MIN_LENGTH, "비밀번호는 최소 8자 이상이어야 합니다.")
+      .max(PASSWORD_MAX_LENGTH, "비밀번호는 최대 20자 입니다."),
   })
   /* 전체 refine이기 때문에 어떤 filed에서 일어난 에러인지 명확하게 표시 해야됨 */
   .refine(checkPassword, {
