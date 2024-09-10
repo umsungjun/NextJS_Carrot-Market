@@ -8,12 +8,12 @@ import FormInput from "@/components/form-input";
 import SocialLogin from "@/components/social-login";
 
 /* Util */
-import { handleForm } from "./action";
+import { login } from "./action";
 
 export default function Login() {
   /* Server Action */
 
-  const [state, action] = useFormState(handleForm, null);
+  const [state, action] = useFormState(login, null);
 
   return (
     <div className="flex flex-col gap-10 py-8 px-6">

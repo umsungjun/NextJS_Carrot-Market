@@ -1,12 +1,8 @@
 "use server";
 
-import { redirect } from "next/navigation";
-
-export const handleForm = async (prevState: any, formData: FormData) => {
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-
-  redirect("/");
-  return {
-    errors: ["wrong password", "password too short"],
+export const login = async (prevState: any, formData: FormData) => {
+  const data = {
+    email: formData.get("email"),
+    password: formData.get("password"),
   };
 };
