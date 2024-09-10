@@ -5,6 +5,8 @@ import {
   PASSWORD_MIN_LENGTH,
   PASSWORD_MAX_LENGTH,
   PASSWORD_REGEX,
+  NAME_MAX_LENGTH,
+  NAME_MIN_LENGTH,
 } from "@/lib/constants";
 
 const checkUserName = (userName: string) => !NAME_REGEX.includes(userName);
@@ -23,15 +25,15 @@ const formSchema = z
         invalid_type_error: "이름에 숫자는 사용할 수 없습니다.",
         required_error: "이름을 입력해주세요.",
       })
-      .min(3, "이름은 최소 3자 이상이어야 합니다.")
-      .max(10, "이름은 최대 10자까지 입력 가능합니다.")
+      .min(NAME_MIN_LENGTH, "이름은 최소 2자 이상이어야 합니다.")
+      .max(NAME_MAX_LENGTH, "이름은 최대 20자까지 입력 가능합니다.")
       /* refine: 특정 단어 validation / false를 반환하면 에러문구 반환 */
       .refine(checkUserName, "이름에 부적절한 단어를 사용할 수 없습니다."),
     email: z.string().email("이메일 형식으로 입력해주세요"),
     password: z
       .string()
       .min(PASSWORD_MIN_LENGTH, "비밀번호는 최소 8자 이상이어야 합니다.")
-      .max(PASSWORD_MAX_LENGTH, "비밀번호는 최대 20자 입니다.")
+      .max(PASSWORD_MAX_LENGTH, "비밀번호는 최대 20자까지 입력 가능합니다.")
       .regex(
         PASSWORD_REGEX,
         "비밀번호는 문자, 숫자, 특수문자를 포함해야 합니다."
@@ -39,7 +41,7 @@ const formSchema = z
     confirmPassword: z
       .string()
       .min(PASSWORD_MIN_LENGTH, "비밀번호는 최소 8자 이상이어야 합니다.")
-      .max(PASSWORD_MAX_LENGTH, "비밀번호는 최대 20자 입니다."),
+      .max(PASSWORD_MAX_LENGTH, "비밀번호는 최대 20자까지 입력 가능합니다."),
   })
   /* 전체 refine이기 때문에 어떤 filed에서 일어난 에러인지 명확하게 표시 해야됨 */
   .refine(checkPassword, {
