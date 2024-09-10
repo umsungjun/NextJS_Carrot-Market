@@ -3,8 +3,8 @@
 import { useFormState } from "react-dom";
 
 /* Component */
-import FormBtn from "@/components/form-btn";
-import FormInput from "@/components/form-input";
+import Input from "@/components/Input";
+import Button from "@/components/Button";
 import SocialLogin from "@/components/social-login";
 
 /* Util */
@@ -21,16 +21,23 @@ export default function Login() {
         <h2 className="text-xl">Log in with email ans password.</h2>
       </div>
       <form action={action} className="flex flex-col gap-3">
-        <FormInput name="email" type="email" placeholder="Email" required />
-        <FormInput
+        <Input
+          name="email"
+          type="email"
+          placeholder="Email"
+          required
+          errors={state?.fieldErrors.email}
+        />
+        <Input
           name="password"
           type="password"
           placeholder="Password"
           required
           minLength={PASSWORD_MIN_LENGTH}
           maxLength={PASSWORD_MAX_LENGTH}
+          errors={state?.fieldErrors.password}
         />
-        <FormBtn text="Create account" />
+        <Button text="Create account" />
       </form>
       <SocialLogin />
     </div>

@@ -13,7 +13,9 @@ import { z } from "zod";
 const formSchema = z.object({
   email: z.string().email().toLowerCase(),
   password: z
-    .string()
+    .string({
+      required_error: "비밀번호는 필수 값입니다.",
+    })
     .min(PASSWORD_MIN_LENGTH, PASSWORD_MIN_ERROR)
     .max(PASSWORD_MAX_LENGTH, PASSWORD_MAX_ERROR)
     .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
@@ -24,4 +26,12 @@ export const login = async (prevState: any, formData: FormData) => {
     email: formData.get("email"),
     password: formData.get("password"),
   };
+
+  const result = formSchema.safeParse(data);
+
+  if (!result.success) {
+    return result.error.flatten();
+  } else {
+    console.log(result);
+  }
 };
