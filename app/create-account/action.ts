@@ -7,6 +7,9 @@ import {
   PASSWORD_REGEX,
   NAME_MAX_LENGTH,
   NAME_MIN_LENGTH,
+  PASSWORD_MIN_ERROR,
+  PASSWORD_MAX_ERROR,
+  PASSWORD_REGEX_ERROR,
 } from "@/lib/constants";
 
 const checkUserName = (userName: string) => !NAME_REGEX.includes(userName);
@@ -32,12 +35,9 @@ const formSchema = z
     email: z.string().email("이메일 형식으로 입력해주세요"),
     password: z
       .string()
-      .min(PASSWORD_MIN_LENGTH, "비밀번호는 최소 8자 이상이어야 합니다.")
-      .max(PASSWORD_MAX_LENGTH, "비밀번호는 최대 20자까지 입력 가능합니다.")
-      .regex(
-        PASSWORD_REGEX,
-        "비밀번호는 문자, 숫자, 특수문자를 포함해야 합니다."
-      ),
+      .min(PASSWORD_MIN_LENGTH, PASSWORD_MIN_ERROR)
+      .max(PASSWORD_MAX_LENGTH, PASSWORD_MAX_ERROR)
+      .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
     confirmPassword: z
       .string()
       .min(PASSWORD_MIN_LENGTH, "비밀번호는 최소 8자 이상이어야 합니다.")
