@@ -6,3 +6,19 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  // autoincrement() 자동으로 1씩 증가
+  id         Int      @id @default(autoincrement())
+  // username은 중복될 수 없음
+  username   String   @unique
+  // email은 필수값이 아님(SMS로그인이 가능하기 떄문)
+  email      String?  @unique
+  password   String?
+  phone      String?  @unique
+  github_id  String?  @unique
+  // @default("https:blabla")를 통해 기본 avatar url을 지정할 수 있음
+  avatar     String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
