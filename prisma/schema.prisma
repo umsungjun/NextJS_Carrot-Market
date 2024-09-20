@@ -9,16 +9,27 @@ datasource db {
 
 model User {
   // autoincrement() 자동으로 1씩 증가
-  id         Int      @id @default(autoincrement())
+  id         Int        @id @default(autoincrement())
   // username은 중복될 수 없음
-  username   String   @unique
+  username   String     @unique
   // email은 필수값이 아님(SMS로그인이 가능하기 떄문)
-  email      String?  @unique
+  email      String?    @unique
   password   String?
-  phone      String?  @unique
-  github_id  String?  @unique
+  phone      String?    @unique
+  github_id  String?    @unique
   // @default("https:blabla")를 통해 기본 avatar url을 지정할 수 있음
   avatar     String?
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  SMSToken   SMSToken[]
+}
+
+model SMSToken {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  // Cascade User 삭제 시 SMSToken 같이 제거
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
 }
