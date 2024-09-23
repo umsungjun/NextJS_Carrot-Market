@@ -94,7 +94,7 @@ export const createAccount = async (prevState: any, formData: FormData) => {
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
   };
-  /* safeParse, safeParseAsync를 사용하면 동기로 처리할 수 있음 */
+  /* safeParse, safeParseAsync를 사용하면 동기로 처리할 수 있음(서버와 통신하기 때문에 동기로 처리해야 함) */
   const result = await formSchema.safeParseAsync(data);
 
   if (!result.success) {
