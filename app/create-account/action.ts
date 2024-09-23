@@ -11,8 +11,9 @@ import {
   PASSWORD_MAX_ERROR,
   PASSWORD_REGEX_ERROR,
 } from "@/lib/constants";
+import { db } from "@/lib/db";
 
-const checkUserName = (userName: string) => !NAME_REGEX.includes(userName);
+const checkUserName = (username: string) => !NAME_REGEX.includes(username);
 const checkPassword = ({
   password,
   confirmPassword,
@@ -20,6 +21,33 @@ const checkPassword = ({
   password: string;
   confirmPassword: string;
 }) => password === confirmPassword;
+
+/* userName Validation(Server) */
+const checkUniqueUserName = async (username: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      username,
+    },
+    select: {
+      /* 성능 개선을 위해 id 존재 여부만 확인 */
+      id: true,
+    },
+  });
+  return !Boolean(user);
+};
+
+/* email Validation(Server) */
+const checkUniqueEmail = async (email: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+    },
+  });
+  return !Boolean(user);
+};
 
 const formSchema = z
   .object({
@@ -31,8 +59,18 @@ const formSchema = z
       .min(NAME_MIN_LENGTH, "이름은 최소 2자 이상이어야 합니다.")
       .max(NAME_MAX_LENGTH, "이름은 최대 20자까지 입력 가능합니다.")
       /* refine: 특정 단어 validation / false를 반환하면 에러문구 반환 */
-      .refine(checkUserName, "이름에 부적절한 단어를 사용할 수 없습니다."),
-    email: z.string().email("이메일 형식으로 입력해주세요"),
+      .refine(checkUserName, "이름에 부적절한 단어를 사용할 수 없습니다.")
+      .refine(
+        checkUniqueUserName,
+        "이미 사용 중인 이름입니다. 다른 이름을 입력해 주세요."
+      ),
+    email: z
+      .string()
+      .email("이메일 형식으로 입력해주세요")
+      .refine(
+        checkUniqueEmail,
+        "이미 사용 중인 이메일입니다. 다른 이메일을 입력해 주세요."
+      ),
     password: z
       .string()
       .min(PASSWORD_MIN_LENGTH, PASSWORD_MIN_ERROR)
@@ -56,11 +94,11 @@ export const createAccount = async (prevState: any, formData: FormData) => {
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
   };
-  const result = formSchema.safeParse(data);
+  /* safeParse, safeParseAsync를 사용하면 동기로 처리할 수 있음 */
+  const result = await formSchema.safeParseAsync(data);
 
   if (!result.success) {
     /* flatten() key:["error"] return 해줌 */
-    // console.log(result.error.flatten());
     return result.error.flatten();
   } else {
     console.log(result.data);
