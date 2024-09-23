@@ -1,5 +1,6 @@
 "use server";
 import { z } from "zod";
+import bcrypt from "bcrypt";
 import {
   NAME_REGEX,
   PASSWORD_MIN_LENGTH,
@@ -101,6 +102,19 @@ export const createAccount = async (prevState: any, formData: FormData) => {
     /* flatten() key:["error"] return 해줌 */
     return result.error.flatten();
   } else {
-    console.log(result.data);
+    /* 두번 째 인자는 hash 알고리즘을 몇번 돌릴건지 결정 */
+    const hashedPassword = await bcrypt.hash(result.data.password, 12);
+
+    const user = await db.user.create({
+      data: {
+        username: result.data.username,
+        email: result.data.email,
+        password: hashedPassword,
+      },
+      select: {
+        id: true,
+      },
+    });
+    console.log("유저 생성", user);
   }
 };
