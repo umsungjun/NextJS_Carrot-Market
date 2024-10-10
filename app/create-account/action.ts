@@ -1,8 +1,6 @@
 "use server";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { getIronSession } from "iron-session";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import {
@@ -17,6 +15,7 @@ import {
   PASSWORD_REGEX_ERROR,
 } from "@/lib/constants";
 import { db } from "@/lib/db";
+import { getSession } from "@/lib/session";
 
 const checkUserName = (username: string) => !NAME_REGEX.includes(username);
 const checkPassword = ({
@@ -119,14 +118,11 @@ export const createAccount = async (prevState: any, formData: FormData) => {
         id: true,
       },
     });
-    const cookie = await getIronSession(cookies(), {
-      cookieName: "delicious-carrot",
-      password: process.env.COOKIE_PASSWORD!,
-    });
-    //@ts-ignore
-    cookie.id = user.id;
-    /* cookie에 암호화 된 user.id 저장 */
-    await cookie.save();
+    /* session 존재 여부를 getSession()을 통해 확인(로그인 여부와 동일) */
+    const session = await getSession();
+    session.id = user.id;
+    /* session에 암호화 된 user.id 저장 */
+    await session.save();
 
     redirect("/profile");
   }
