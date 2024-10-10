@@ -26,33 +26,6 @@ const checkPassword = ({
   confirmPassword: string;
 }) => password === confirmPassword;
 
-/* userName Validation(Server) */
-const checkUniqueUserName = async (username: string) => {
-  const user = await db.user.findUnique({
-    where: {
-      username,
-    },
-    select: {
-      /* 성능 개선을 위해 id 존재 여부만 확인 */
-      id: true,
-    },
-  });
-  return !Boolean(user);
-};
-
-/* email Validation(Server) */
-const checkUniqueEmail = async (email: string) => {
-  const user = await db.user.findUnique({
-    where: {
-      email,
-    },
-    select: {
-      id: true,
-    },
-  });
-  return !Boolean(user);
-};
-
 const formSchema = z
   .object({
     username: z
@@ -63,18 +36,8 @@ const formSchema = z
       .min(NAME_MIN_LENGTH, "이름은 최소 2자 이상이어야 합니다.")
       .max(NAME_MAX_LENGTH, "이름은 최대 20자까지 입력 가능합니다.")
       /* refine: 특정 단어 validation / false를 반환하면 에러문구 반환 */
-      .refine(checkUserName, "이름에 부적절한 단어를 사용할 수 없습니다.")
-      .refine(
-        checkUniqueUserName,
-        "이미 사용 중인 이름입니다. 다른 이름을 입력해 주세요."
-      ),
-    email: z
-      .string()
-      .email("이메일 형식으로 입력해주세요")
-      .refine(
-        checkUniqueEmail,
-        "이미 사용 중인 이메일입니다. 다른 이메일을 입력해 주세요."
-      ),
+      .refine(checkUserName, "이름에 부적절한 단어를 사용할 수 없습니다."),
+    email: z.string().email("이메일 형식으로 입력해주세요"),
     password: z
       .string()
       .min(PASSWORD_MIN_LENGTH, PASSWORD_MIN_ERROR)
@@ -85,7 +48,47 @@ const formSchema = z
       .min(PASSWORD_MIN_LENGTH, "비밀번호는 최소 8자 이상이어야 합니다.")
       .max(PASSWORD_MAX_LENGTH, "비밀번호는 최대 20자까지 입력 가능합니다."),
   })
-  /* 전체 refine이기 때문에 어떤 filed에서 일어난 에러인지 명확하게 표시 해야됨 */
+  /* superRefine은 DB 조회를 최소화 하기 위한 전략 */
+  .superRefine(async ({ username }, ctx) => {
+    const user = await db.user.findUnique({
+      where: {
+        username,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (user) {
+      ctx.addIssue({
+        code: "custom",
+        message: "이미 사용 중인 이름입니다. 다른 이름을 입력해 주세요.",
+        path: ["username"],
+        fatal: true,
+      });
+      /* 에러 발생 시 조기 종료 && fetal 이슈 존재 시 refine 실행 되지 않음 */
+      return z.NEVER;
+    }
+  })
+  .superRefine(async ({ email }, ctx) => {
+    const user = await db.user.findUnique({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (user) {
+      ctx.addIssue({
+        code: "custom",
+        message: "이미 사용 중인 이메일입니다. 다른 이메일을 입력해 주세요.",
+        path: ["email"],
+        fatal: true,
+      });
+
+      return z.NEVER;
+    }
+  })
   .refine(checkPassword, {
     message: "비밀번호가 일치하지 않습니다.",
     path: ["confirmPassword"],
