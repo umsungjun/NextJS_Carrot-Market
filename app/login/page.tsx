@@ -37,7 +37,7 @@ export default function Login() {
           maxLength={PASSWORD_MAX_LENGTH}
           errors={state?.fieldErrors.password}
         />
-        <Button text="Create account" />
+        <Button text="로그인" />
       </form>
       <SocialLogin />
     </div>
