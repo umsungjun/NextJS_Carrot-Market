@@ -7,7 +7,9 @@ export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
 
   if (!code) {
-    return notFound();
+    return new Response(null, {
+      status: 400,
+    });
   }
 
   /* accessToken 받는 로직 */
