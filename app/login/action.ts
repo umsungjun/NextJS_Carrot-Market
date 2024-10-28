@@ -13,7 +13,7 @@ import {
 } from "@/lib/constants";
 import { db } from "@/lib/db";
 import { z } from "zod";
-import { getSession } from "@/lib/session";
+import { saveSession } from "@/lib/session";
 
 /* 입력한 이메일을 사용하는 유저 존재 여부 */
 const checkEmailExists = async (email: string) => {
@@ -68,13 +68,7 @@ export const login = async (prevState: any, formData: FormData) => {
     const ok = await bcrypt.compare(result.data.password, user!.password ?? "");
 
     if (ok) {
-      const session = await getSession();
-
-      session.id = user!.id;
-
-      await session.save();
-
-      redirect("/profile");
+      await saveSession(user!.id);
     } else {
       return {
         fieldErrors: {
