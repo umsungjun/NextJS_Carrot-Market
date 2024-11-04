@@ -3,6 +3,7 @@
 import { z } from "zod";
 import validator from "validator";
 import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
 
 const phoneSchema = z
   .string()
@@ -18,7 +19,8 @@ interface ActionState {
   token: boolean;
 }
 
-export const smsLogin = (prevState: ActionState, formData: FormData) => {
+export const smsLogin = async (prevState: ActionState, formData: FormData) => {
+  console.log(formData);
   const phone = formData.get("phone");
   const token = formData.get("token");
 
@@ -29,6 +31,13 @@ export const smsLogin = (prevState: ActionState, formData: FormData) => {
     if (!result.success) {
       return { token: false, error: result.error.flatten() };
     } else {
+      await db.sMSToken.deleteMany({
+        where: {
+          user: {
+            phone: result.data /* 검증받은 Phone Number */,
+          },
+        },
+      });
       return { token: true };
     }
   } else {
