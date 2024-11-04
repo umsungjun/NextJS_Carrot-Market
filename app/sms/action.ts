@@ -1,8 +1,10 @@
 "use server";
 
+import crypto from "crypto";
 import { z } from "zod";
 import validator from "validator";
 import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
 
 const phoneSchema = z
   .string()
@@ -18,7 +20,27 @@ interface ActionState {
   token: boolean;
 }
 
-export const smsLogin = (prevState: ActionState, formData: FormData) => {
+const createToken = async () => {
+  const token = crypto.randomInt(100000, 999999).toString();
+
+  const exists = await db.sMSToken.findUnique({
+    where: {
+      token,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (exists) {
+    /* 토큰 존재 시 */
+    return createToken();
+  } else {
+    return token;
+  }
+};
+
+export const smsLogin = async (prevState: ActionState, formData: FormData) => {
   const phone = formData.get("phone");
   const token = formData.get("token");
 
@@ -29,6 +51,34 @@ export const smsLogin = (prevState: ActionState, formData: FormData) => {
     if (!result.success) {
       return { token: false, error: result.error.flatten() };
     } else {
+      /* 기존에 존재하던 토큰 제거 */
+      await db.sMSToken.deleteMany({
+        where: {
+          user: {
+            phone: result.data /* 검증받은 Phone Number */,
+          },
+        },
+      });
+
+      const token = await createToken();
+      await db.sMSToken.create({
+        data: {
+          token,
+          user: {
+            /* 유저가 존재하면 phone값으로 연결, 존재하지 않다면 휴대폰 번호로 생성 */
+            connectOrCreate: {
+              where: {
+                phone: result.data,
+              },
+              create: {
+                username: result.data,
+                phone: result.data,
+              },
+            },
+          },
+        },
+      });
+
       return { token: true };
     }
   } else {
