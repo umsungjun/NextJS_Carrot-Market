@@ -5,6 +5,7 @@ import { z } from "zod";
 import validator from "validator";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { saveSession } from "@/lib/session";
 
 const phoneSchema = z
   .string()
@@ -13,8 +14,27 @@ const phoneSchema = z
     (phone) => validator.isMobilePhone(phone, "ko-KR"),
     "유효한 휴대폰 번호를 입력해주세요."
   );
+
+const tokenExists = async (token: number) => {
+  const exists = await db.sMSToken.findUnique({
+    where: {
+      token: token + "",
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return Boolean(exists);
+};
+
 /* coerce = 전달받은 token(type string) => number로 변환 / 변환이 안될 경우 오류 출력 */
-const tokenSchema = z.coerce.number().min(100000).max(999999);
+const tokenSchema = z.coerce
+  .number()
+  .min(100000)
+  .max(999999)
+  // refine return 값이 false일 때 에러 출력
+  .refine(tokenExists, "인증번호가 유효하지 않습니다.");
 
 interface ActionState {
   token: boolean;
@@ -82,8 +102,8 @@ export const smsLogin = async (prevState: ActionState, formData: FormData) => {
       return { token: true };
     }
   } else {
-    const result = tokenSchema.safeParse(token);
-
+    const result = await tokenSchema.safeParseAsync(token);
+    console.log(result);
     if (!result.success) {
       /* flatten() = key: error 형태로 변환해줌 */
 
@@ -92,8 +112,24 @@ export const smsLogin = async (prevState: ActionState, formData: FormData) => {
         error: result.error.flatten(),
       };
     } else {
-      /* ToDo Login */
-      redirect("/");
+      const token = await db.sMSToken.findUnique({
+        where: {
+          token: result.data + "",
+        },
+        select: {
+          id: true,
+          userId: true,
+        },
+      });
+
+      await saveSession(token!.userId);
+      await db.sMSToken.delete({
+        where: {
+          id: token!.id,
+        },
+      });
+
+      redirect("/profile");
     }
   }
 };
