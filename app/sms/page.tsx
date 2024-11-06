@@ -34,7 +34,7 @@ export default function SMSLogin() {
           <Input
             name="token"
             type="number"
-            placeholder="Verification code"
+            placeholder="인증번호"
             required
             min={100000}
             max={999999}
