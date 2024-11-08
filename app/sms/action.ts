@@ -1,5 +1,6 @@
 "use server";
 
+import twilio from "twilio";
 import crypto from "crypto";
 import { z } from "zod";
 import validator from "validator";
@@ -97,6 +98,18 @@ export const smsLogin = async (prevState: ActionState, formData: FormData) => {
             },
           },
         },
+      });
+
+      /* twilio client 생성 */
+      const client = twilio(
+        process.env.TWILIO_ACCOUNT_SID,
+        process.env.TWILIO_AUTH_TOKEN
+      );
+      /* sms 인증번호 전송(twilio 체험판 계정이라 가입 계정 번호로만 전송 가능) */
+      await client.messages.create({
+        from: process.env.TWILIO_PHONE_NUMBER!,
+        to: process.env.MY_PHONE_NUMBER!, // result.data가 맞지만 내 번호만 됨,
+        body: `당근 마켓 인증번호 ${token}`,
       });
 
       return { token: true };
