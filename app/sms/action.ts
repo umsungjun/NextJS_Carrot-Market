@@ -116,7 +116,7 @@ export const smsLogin = async (prevState: ActionState, formData: FormData) => {
     }
   } else {
     const result = await tokenSchema.safeParseAsync(token);
-    console.log(result);
+
     if (!result.success) {
       /* flatten() = key: error 형태로 변환해줌 */
 
