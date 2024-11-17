@@ -12,4 +12,7 @@
   .primary-btn {
     @apply w-full text-white bg-orange-500 font-medium rounded-md text-center hover:bg-orange-400 transition-colors;
   }
+  .layout-tab-btn {
+    @apply flex flex-col items-center gap-px;
+  }
 }
