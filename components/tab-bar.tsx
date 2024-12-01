@@ -22,8 +22,8 @@ export default function TabBar() {
   const pathName = usePathname();
   return (
     <div className="fixed bottom-0 w-full mx-auto max-w-screen-md grid grid-cols-5 border-t border-neutral-600 px-5 py-3 *:text-white ">
-      <Link href="/product" className="layout-tab-btn">
-        {pathName === "/product" ? (
+      <Link href="/products" className="layout-tab-btn">
+        {pathName === "/products" ? (
           <SolidHomeIcon className="w-7 h-7" />
         ) : (
           <OutlineHomeIcon className="w-7 h-7" />
