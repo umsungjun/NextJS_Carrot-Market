@@ -46,8 +46,9 @@ export default async function ProductDetail({
   /* 상품정보가 없을 때 예외처리 */
   if (!product) return notFound();
 
-  /* 상품을 올린 사용자인지 아닌지 여부 */
-  const isOwner = await getIsOwner(product.userId);
+  /* ToDo 상품을 올린 유저일 때 삭제하기 기능 구현 
+     상품을 올린 사용자인지 아닌지 여부 
+     const isOwner = await getIsOwner(product.userId); */
 
   return (
     <div>
@@ -55,7 +56,7 @@ export default async function ProductDetail({
         <Image fill src={product.photo} alt={product.title} />
       </div>
       <div className="p-5 flex items-center gap-3 border-b border-neutral-700">
-        <div className="size-10 rounded-full">
+        <div className="size-10 rounded-full overflow-hidden">
           {product.user.avatar ? (
             <Image
               src={product.user.avatar}
@@ -79,7 +80,6 @@ export default async function ProductDetail({
         <span className="font-semibold text-lg">
           {formatToWon(product.price)}원
         </span>
-        {/* ToDo 상품을 올린 유저일 때 삭제하기 기능 구현 */}
         <Link
           href={``}
           className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
