@@ -12,8 +12,12 @@ export const formatToTimeAgo = (date: Date): string => {
   /* 1970년 1월 1일부터 오늘까지의 시간을 ms로 반환 */
   const now = new Date().getTime();
 
-  /* - 몇일 */
+  /* - 몇일  */
   const diff = Math.round((time - now) / datInMs);
+
+  if (diff === 0) {
+    return "오늘";
+  }
 
   /* 음수는 "일 전"으로 표기, 양수는 "일 후"로 표기*/
   const formatter = new Intl.RelativeTimeFormat("ko");
