@@ -23,7 +23,13 @@ export default function ListProduct({
     <Link href={`/products/${id}`} className="flex gap-5">
       <div className="relative min-w-28 min-h-28 rounded-md overflow-hidden">
         {/* width와 height를 모르는 경우에 fill 속성을 사용 함 */}
-        <Image src={photo} alt={title} fill quality={100} />
+        <Image
+          src={photo}
+          alt={title}
+          fill
+          quality={100}
+          className="object-cover"
+        />
       </div>
       <div className="flex flex-col gap-1 text-white">
         <span className="text-lg">{title}</span>
