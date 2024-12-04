@@ -63,6 +63,7 @@ export default async function ProductDetail({
               alt={product.user.username}
               width={40}
               height={40}
+              className="object-cover"
             />
           ) : (
             <UserIcon className="size-10" />
