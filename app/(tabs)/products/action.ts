@@ -13,7 +13,7 @@ export const getMoreProducts = async (page: number) => {
       created_at: true,
     },
     /* 건너 뛰는 옵션 */
-    skip: 1,
+    skip: page * 1,
     /* 가져올 개수 지정 옵션 */
     take: 1,
     /* 상풍 최신순으로 정렬 */
