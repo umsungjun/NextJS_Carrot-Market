@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 
-import ListProduct from "@/components/list-product";
 import ProductList from "@/components/product-list";
 
 const getInitialProducts = async () => {
