@@ -49,6 +49,7 @@ export default function AddProduct() {
           id="photo"
           name="photo"
           className="hidden"
+          accept="image/*"
         />
         <Input name="title" required placeholder="제목" type="text" />
         <Input name="price" required placeholder="가격" type="number" />
