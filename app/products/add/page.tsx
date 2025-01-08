@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, useState } from "react";
+import { uploadProduct } from "./actions";
 
 import Input from "@/components/Input";
 import Button from "@/components/Button";
@@ -22,7 +23,7 @@ export default function AddProduct() {
 
   return (
     <div>
-      <form className="flex flex-col gap-5 p-5">
+      <form action={uploadProduct} className="flex flex-col gap-5 p-5">
         <label
           htmlFor="photo"
           className="border-2 border-neutral-300 rounded-md border-dashed aspect-square flex items-center justify-center flex-col text-neutral-300 cursor-pointer bg-center bg-no-repeat bg-cover"
