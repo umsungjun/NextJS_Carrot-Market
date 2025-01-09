@@ -51,14 +51,9 @@ export default function AddProduct() {
           className="hidden"
           accept="image/*"
         />
-        <Input name="title" required placeholder="제목" type="text" />
+        <Input name="title" required placeholder="상품명" type="text" />
         <Input name="price" required placeholder="가격" type="number" />
-        <Input
-          name="description"
-          required
-          placeholder="자세한 설명"
-          type="text"
-        />
+        <Input name="description" required placeholder="설명" type="text" />
         <Button text="작성완료" />
       </form>
     </div>
